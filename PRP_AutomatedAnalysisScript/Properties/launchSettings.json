@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PRP_AutomatedAnalysisScript": {
+      "commandName": "Project",
+      "commandLineArgs": "dict.txt FilteredList.txt"
+    }
+  }
+}
