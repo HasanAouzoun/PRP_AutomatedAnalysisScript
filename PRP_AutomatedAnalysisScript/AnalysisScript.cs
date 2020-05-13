@@ -8,8 +8,8 @@ namespace PRP_AutomatedAnalysisScript
 {
     class AnalysisScript
     {
-        public static List<string> UnconsistentPasswordsList;
-        public static List<UnconsistentMatch> UnconsistentMatchList;
+        public static List<string> InconsistentPasswordsList;
+        public static List<InconsistentMatch> InconsistentMatchList;
         public static List<string> ConsistentPasswordsList;
         public static List<ResultEntry> FinalResultList;
 
@@ -24,8 +24,8 @@ namespace PRP_AutomatedAnalysisScript
         /// <returns></returns>
         public static void AutomatedAnalysisScript(List<string> dictionaryList, List<string> passwordList)
         {
-            UnconsistentPasswordsList = new List<string>();
-            UnconsistentMatchList = new List<UnconsistentMatch>();
+            InconsistentPasswordsList = new List<string>();
+            InconsistentMatchList = new List<InconsistentMatch>();
             ConsistentPasswordsList = new List<string>();
             FinalResultList = new List<ResultEntry>();
 
@@ -58,14 +58,16 @@ namespace PRP_AutomatedAnalysisScript
                 var listOfAllCombinations = GetAllCombinatiosScript.GetAllCombinations(originalWord, nonAlphaCharacters);
 
                 // Check agains the dictionary to find if any of the combinations is a valid word
-                var match = dictionaryList.Intersect(listOfAllCombinations).FirstOrDefault();
+                var matchedList = dictionaryList.Intersect(listOfAllCombinations).ToList();
 
                 // if matches a combination continue -- otherwise exit the loop and go to next password
-                if (string.IsNullOrEmpty(match))
+                if (matchedList.Count < 1)
                 {
                     continue;
                 }
 
+                // A list for Matched and Consistent passwords
+                var goodMatchedList = new List<string>(); 
 
                 // Checking for consitancy in the password
                 if (nonAlphaCharacters.Count == 2)
@@ -75,25 +77,43 @@ namespace PRP_AutomatedAnalysisScript
 
                     if (nonAlphaCharacterOne.character.Equals(nonAlphaCharacterTwo.character))
                     {
-                        var alphaCharOfNonAlphaOne = match.ElementAt(nonAlphaCharacterOne.position);
-                        var alphaCharOfNonAlphaTwo = match.ElementAt(nonAlphaCharacterTwo.position);
-
-                        if (!alphaCharOfNonAlphaOne.Equals(alphaCharOfNonAlphaTwo))
+                        foreach(var matched in matchedList)
                         {
-                            UnconsistentPasswordsList.Add(word);
+                            var alphaCharOfNonAlphaOne = matched.ElementAt(nonAlphaCharacterOne.position);
+                            var alphaCharOfNonAlphaTwo = matched.ElementAt(nonAlphaCharacterTwo.position);
 
-                            var UnconsistentMatch = new UnconsistentMatch
+                            if (!alphaCharOfNonAlphaOne.Equals(alphaCharOfNonAlphaTwo))
                             {
-                                Symbol = nonAlphaCharacterOne.character,
-                                AlphaOne = alphaCharOfNonAlphaOne,
-                                AlphaTwo = alphaCharOfNonAlphaTwo,
-                                PasswordMatch = new PasswordMatch { Password = word, Dictionary = match }
-                            };
-                            UnconsistentMatchList.Add(UnconsistentMatch);
+                                InconsistentPasswordsList.Add(word);
 
-                            continue;
+                                var InconsistentMatch = new InconsistentMatch
+                                {
+                                    Symbol = nonAlphaCharacterOne.character,
+                                    AlphaOne = alphaCharOfNonAlphaOne,
+                                    AlphaTwo = alphaCharOfNonAlphaTwo,
+                                    PasswordMatch = new PasswordMatch { Password = word, Dictionary = matched }
+                                };
+                                InconsistentMatchList.Add(InconsistentMatch);
+
+                                continue;
+                            }
+
+                            goodMatchedList.Add(matched);
                         }
                     }
+                    else
+                    {
+                        goodMatchedList = matchedList;
+                    }
+                }
+                else
+                {
+                    goodMatchedList = matchedList;
+                }
+
+                if(goodMatchedList.Count < 1)
+                {
+                    continue;
                 }
 
                 // If password is consistent --> add to list
@@ -102,31 +122,34 @@ namespace PRP_AutomatedAnalysisScript
                 // Getting the result
                 foreach (var nonAlphaCharacter in nonAlphaCharacters)
                 {
-                    // result entry structure ==> Symbol, Alphabet, Count, List of all instances{password and its match in the dictionary}
-                    var nonAlphaChar = nonAlphaCharacter.character;
-                    var alphabetChar = match.ElementAt(nonAlphaCharacter.position);
-                    var password = word;
-                    var dictionaryWord = match;
-
-                    // Check the results entry if Symbol and Alphabet matches as an existing entry
-                    var resultEntry = FinalResultList.FirstOrDefault(e => e.Symbol == nonAlphaChar && e.Alphabet == alphabetChar);
-
-                    if (resultEntry != null) // Result already has an existing entry for current pattern
+                    foreach (var matched in goodMatchedList)
                     {
-                        resultEntry.Count++;
-                        resultEntry.Passwords.Add(new PasswordMatch { Password = password, Dictionary = dictionaryWord });
-                    }
-                    else // Result does not have the {Symbol "nonAlpha", Alpha} as an entry i.e. new replacement pattern --> therefore, add a new result entry
-                    {
-                        var newResultEntry = new ResultEntry
+                        // result entry structure ==> Symbol, Alphabet, Count, List of all instances{password and its match in the dictionary}
+                        var nonAlphaChar = nonAlphaCharacter.character;
+                        var alphabetChar = matched.ElementAt(nonAlphaCharacter.position);
+                        var password = word;
+                        var dictionaryWord = matched;
+
+                        // Check the results entry if Symbol and Alphabet matches as an existing entry
+                        var resultEntry = FinalResultList.FirstOrDefault(e => e.Symbol == nonAlphaChar && e.Alphabet == alphabetChar);
+
+                        if (resultEntry != null) // Result already has an existing entry for current pattern
                         {
-                            Symbol = nonAlphaChar,
-                            Alphabet = alphabetChar,
-                            Count = 1,
-                            Passwords = new List<PasswordMatch> { new PasswordMatch { Password = password, Dictionary = dictionaryWord } }
-                        };
+                            resultEntry.Count++;
+                            resultEntry.Passwords.Add(new PasswordMatch { Password = password, Dictionary = dictionaryWord });
+                        }
+                        else // Result does not have the {Symbol "nonAlpha", Alpha} as an entry i.e. new replacement pattern --> therefore, add a new result entry
+                        {
+                            var newResultEntry = new ResultEntry
+                            {
+                                Symbol = nonAlphaChar,
+                                Alphabet = alphabetChar,
+                                Count = 1,
+                                Passwords = new List<PasswordMatch> { new PasswordMatch { Password = password, Dictionary = dictionaryWord } }
+                            };
 
-                        FinalResultList.Add(newResultEntry);
+                            FinalResultList.Add(newResultEntry);
+                        }
                     }
                 }
             }

@@ -112,17 +112,17 @@ namespace PRP_AutomatedAnalysisScript
             Console.WriteLine("Sorting the result.");
             AnalysisScript.FinalResultList.Sort((a, b) => a.Symbol.CompareTo(b.Symbol));
 
-            // Write Unconsistent Password Lists to File
+            // Write Inconsistent Password Lists to File
             Console.WriteLine("Writing the unconsitent passwords to file");
-            var unconsistentListFilePath = Path.Combine(_OutputDirectoryPath, "Unconsistent_Password_List.txt");
-            IOHelper.WriteListToFile(unconsistentListFilePath, AnalysisScript.UnconsistentPasswordsList);
+            var inconsistentListFilePath = Path.Combine(_OutputDirectoryPath, "Inconsistent_Password_List.txt");
+            IOHelper.WriteListToFile(inconsistentListFilePath, AnalysisScript.InconsistentPasswordsList);
 
-            // Write Unconsistent Match Lists to File
+            // Write Inconsistent Match Lists to File
             Console.WriteLine("Writing the unconsitent matches to file");
-            var unconsistentMatchedFilePath = Path.Combine(_OutputDirectoryPath, "Unconsistent_Match_List.json");
-            IOHelper.WriteObjectToJson(unconsistentMatchedFilePath, AnalysisScript.UnconsistentMatchList);
+            var inconsistentMatchedFilePath = Path.Combine(_OutputDirectoryPath, "Inconsistent_Match_List.json");
+            IOHelper.WriteObjectToJson(inconsistentMatchedFilePath, AnalysisScript.InconsistentMatchList);
 
-            // Write Unconsistent Password Lists to File
+            // Write consistent Password Lists to File
             Console.WriteLine("Writing the consistent passwords to file");
             var consistentListFilePath = Path.Combine(_OutputDirectoryPath, "Consistent_Password_List.txt");
             IOHelper.WriteListToFile(consistentListFilePath, AnalysisScript.ConsistentPasswordsList);
@@ -150,7 +150,7 @@ namespace PRP_AutomatedAnalysisScript
                 $"\n\tPasswords List contains {_List.Count} passwords" +
                 $"\n\tLocation: {_ListPath}" +
                 $"\nScript outputs:" +
-                $"\n\tUnconsistent_Password_List.txt & Unconsistent_Match_List.json which contains {AnalysisScript.UnconsistentPasswordsList.Count} unconsistent passwords" +
+                $"\n\tInconsistent_Password_List.txt & Inconsistent_Match_List.json which contains {AnalysisScript.InconsistentPasswordsList.Count} inconsistent passwords" +
                 $"\n\tConsistent_Password_List.txt which contains {AnalysisScript.ConsistentPasswordsList.Count} consistent passwords" +
                 $"\n\tFinal_Analysis_Result.json which contains all the replacement patterns found in the password list (the input)";
 

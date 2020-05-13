@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PRP_AutomatedAnalysisScript.Models
+﻿namespace PRP_AutomatedAnalysisScript.Models
 {
-    class UnconsistentMatch
+    class InconsistentMatch
     {
         public char Symbol { get; set; }
         public char AlphaOne { get; set; }
