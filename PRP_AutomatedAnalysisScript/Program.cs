@@ -57,7 +57,41 @@ namespace PRP_AutomatedAnalysisScript
 
         private static void HelpDisplay()
         {
-            Console.WriteLine("Help");
+            Console.WriteLine("Password Replacement Pattern - Automated Analysis Script");
+            Console.WriteLine("\nInformation: " +
+                "\n\tThis script was developed as an automated analysis script " +
+                "\n\tto identify replacement patterns in password list. The script" +
+                "\n\thas two list as inputs. First input is a dictionary list and" +
+                "\n\tthe second is the password list. Both should contain strings" +
+                "\n\tthat are separated by line." +
+                "\n\tThe script uses an algorithm that checks each password to verify" +
+                "\n\tif it is an actual word in the dictionary. Then, it records the" +
+                "\n\treplacement identified in each matched password." +
+                "\nOutput structure;" +
+                "\n\tFinally, it outputs the result to text files. There are several" +
+                "\n\toutputs:" +
+                
+                "\n\t1) Final_Analysis_Result.json: this is the full result that contains" +
+                "\n\t\ta list of objects. Each object is a replacement identified. it" +
+                "\n\t\thas the (Alphabet) replaced and the (Symbol) that replaced it." +
+                "\n\t\tMoreover, it contains a (List) of passwords that each are matched" +
+                "\n\t\twith their dictionary word. Finally, the (Count) of the List is added" +
+                "\n\t\tto each object." +
+                
+                "\n\t2) Final_Analysis_Result.csv: this is the same result as no. 1, However," +
+                "\n\t\tit contains only the (Alphabet), (Symbol) and (Count)." +
+                
+                "\n\t3) Consistent_Password_List.txt: is the list of passwords that were" +
+                "\n\t\tmatched with at least a word from the dictionary list." +
+                
+                "\n\t4) Inconsitent_Password_List.txt: is the list of passwords that were" +
+                "\n\t\tmatched. However, they were not consistent. i.e. if a password has" +
+                "\n\t\tmultiple similar non-alpha characters and they were not substituted" +
+                "\n\t\tto the same alphabet character, then this password is not consisten." +
+                
+                "\nExpected input:" +
+                "\n\tTwo lists - a dictionary list and a password list" +
+                "\n\tExample: PRP_AutomatedAnalysisScript.exe <DictionaryFileName> <ListFileName>");
             // TODO
         }
 
