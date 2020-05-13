@@ -132,6 +132,11 @@ namespace PRP_AutomatedAnalysisScript
             var resultFilePath = Path.Combine(_OutputDirectoryPath, "Final_Analysis_Result.json");
             IOHelper.WriteObjectToJson(resultFilePath, AnalysisScript.FinalResultList);
 
+            // Write the result to File
+            Console.WriteLine("Writing the final results to csv");
+            var resultCsvFilePath = Path.Combine(_OutputDirectoryPath, "Final_Analysis_Result.csv");
+            IOHelper.WriteResultToCsv(resultCsvFilePath, AnalysisScript.FinalResultList);
+
             // Write discription of result
             WriteOutputDiscription();
         }

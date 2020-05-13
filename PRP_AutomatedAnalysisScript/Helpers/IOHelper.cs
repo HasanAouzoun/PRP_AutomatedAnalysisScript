@@ -78,5 +78,22 @@ namespace PRP_AutomatedAnalysisScript.Helpers
 
             File.WriteAllText(file.FullName, text);
         }
+
+        public static void WriteResultToCsv(string path, List<ResultEntry> results)
+        {
+            // create directory if dose not exist
+            var file = new FileInfo(path);
+            file.Directory.Create();
+
+            StreamWriter sw = new StreamWriter(file.FullName);
+            sw.WriteLine("Symbol Alphabet Count");
+
+            foreach (var item in results)
+            {
+                sw.WriteLine($"{item.Symbol} {item.Alphabet} {item.Count}");
+            }
+            
+            sw.Close();
+        }
     }
 }
